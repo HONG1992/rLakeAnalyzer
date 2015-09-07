@@ -18,6 +18,8 @@
 #'@param mixed.cutoff
 #'A cutoff (deg C) where below this threshold, thermo.depth and meta.depths 
 #'are not calculated (NaN is returned). Defaults to 1 deg C.
+#'@param warn.on.NA
+#'Logical. Throw a warning if there are any NAs in the temperature profile. Defaults to TRUE.
 #'@return 
 #'Depth of thermocline. If no thermocline found, value is NaN.
 #'
@@ -49,10 +51,14 @@
 #'@keywords manip
 #'
 #'@export
-thermo.depth <- function(wtr, depths, Smin = 0.1, seasonal=TRUE, index=FALSE, mixed.cutoff=1){
+thermo.depth <- function(wtr, depths, Smin = 0.1, seasonal=TRUE, index=FALSE, mixed.cutoff=1, warn.on.NA = TRUE){
   
   if(any(is.na(wtr))){
-    return(NaN)
+    depth <- depths[!is.na(wtr)]
+    wtr <- wtr[!is.na(wtr)]
+    if (warn_on_NA == TRUE) {
+      warning('Some water temperatures are NAs')
+#     return(NaN)
   }
   
   if(diff(range(wtr, na.rm=TRUE)) < mixed.cutoff){
